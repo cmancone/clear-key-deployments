@@ -129,11 +129,6 @@ jobs:
           pipenv lock -r > requirements.txt
           cat requirements.txt
           pip install -r requirements.txt
-      - name: Install AWS CLI
-        run: |
-          wget "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
-          unzip awscli-exe-linux-x86_64.zip
-          sudo ./aws/install
       - name: Migrate
         run: |
           export sql=$(cat sql/*.sql | tr '\n' ' ' | sed 's/"/\\"/g')
