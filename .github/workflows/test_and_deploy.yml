@@ -71,7 +71,7 @@ jobs:
         uses: cmancone/akeyless-action@v1
         with:
           access-id: ${{ inputs.access-id }}
-          producer-for-aws-access: ${{ aws-producer-path }}
+          producer-for-aws-access: ${{ inputs.aws-producer-path }}
           access-type: ${{ inputs.access-type }}
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v1
