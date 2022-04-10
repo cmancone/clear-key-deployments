@@ -133,6 +133,7 @@ jobs:
         run: |
           export sql=$(cat sql/*.sql | tr '\n' ' ' | sed 's/"/\\"/g')
           export payload="{\"command\": \"apply\", \"sql\": \"$sql\"}"
+          aws sts get-caller-identity
           aws lambda invoke --function-name ${{ inputs.migration-function-name }} --invocation-type RequestResponse --cli-binary-format raw-in-base64-out --payload "$payload" actions.json
           echo "Actions:"
           cat actions.json
