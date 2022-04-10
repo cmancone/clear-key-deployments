@@ -133,7 +133,7 @@ jobs:
         run: |
           export sql=$(cat sql/*.sql | tr '\n' ' ' | sed 's/"/\\"/g')
           export payload="{\"command\": \"apply\", \"sql\": \"$sql\"}"
-          aws lambda invoke --function-name ${{ inputs.migration-function-name }} --invocation-type RequestResponse --cli-binary-format raw-in-base64-out --payload $payload
+          aws lambda invoke --function-name ${{ inputs.migration-function-name }} --invocation-type RequestResponse --cli-binary-format raw-in-base64-out --payload "$payload"
   deploy:
     if: github.ref == ${{ github.event.repository.default_branch }}
     needs: [mygrate]
