@@ -1,5 +1,22 @@
 on:
-  workflow_call
+  workflow_call:
+    inputs:
+      access-id:
+        required: true
+        type: string
+        description: 'The AKeyless access id to use to login to AKeyless'
+      access-type:
+        type: string
+        description: 'The access type to use to login to AKeyless (jwt or aws_iam)'
+        default: 'jwt'
+      aws-producer-path:
+        required: true
+        type: string
+        description: 'The path to the AWS producer in AKeyless.  It will be used to fetch AWS credentials for the deployment'
+      python-version:
+        type: string
+        description: 'The python version to use'
+        default: '3.8'
 jobs:
   test_python:
     runs-on: ubuntu-latest
@@ -10,7 +27,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.8"
+          python-version: ${{ inputs.python-version }}
       - name: Install pipenv
         run: python -m pip install --upgrade pipenv wheel
       - name: Install Dependencies
@@ -30,13 +47,37 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: "3.8"
+          python-version: ${{ inputs.python-version }}
       - name: Install mygrations
         run: python -m pip install --upgrade mygrations
       - name: Check
         run: |
           echo 'files_directory = "sql/"' > mygrate.conf
           echo 'env_file = ".env"' >> mygrate.conf
-          wget 'https://raw.githubusercontent.com/cmancone/mygrations/master/mygrate.py'
+          wget 'https://raw.githubusercontent.com/cmancone/mygrations/5e63700ca5ab179dd57f9e6fcd07fce526def7d3/mygrations/mygrate.py'
           chmod a+x mygrate.py
           ./mygrate.py check
+  terraform_plan:
+    runs-on: ubuntu-latest
+    name: Terraform Plan
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Login to AWS
+        id: fetch-secrets
+        uses: cmancone/akeyless-action@v1
+        with:
+          access-id: ${{ inputs.access-id }}
+          producer-for-aws-access: ${{ aws-producer-path }}
+          access-type: ${{ inputs.access-type }}
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v1
+      - name: Init
+        id: terraform-init
+        run: cd ./terraform && terraform init
+      - name: Plan
+        id: terraform-plan
+        run: cd ./terraform && terraform plan -no-color
