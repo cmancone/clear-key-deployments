@@ -5,14 +5,14 @@ on:
         required: true
         type: string
         description: 'The AKeyless access id to use to login to AKeyless'
-      access-type:
-        type: string
-        description: 'The access type to use to login to AKeyless (jwt or aws_iam)'
-        default: 'jwt'
       aws-producer-path:
         required: true
         type: string
         description: 'The path to the AWS producer in AKeyless.  It will be used to fetch AWS credentials for the deployment'
+      access-type:
+        type: string
+        description: 'The access type to use to login to AKeyless (jwt or aws_iam)'
+        default: 'jwt'
       python-version:
         type: string
         description: 'The python version to use'
