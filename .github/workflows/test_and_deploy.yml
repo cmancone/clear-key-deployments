@@ -36,6 +36,7 @@ jobs:
       - name: Check
         run: |
           echo 'files_directory = "sql/"' > mygrate.conf
+          echo 'env_file = ".env"' >> mygrate.conf
           wget 'https://raw.githubusercontent.com/cmancone/mygrations/master/mygrate.py'
           chmod a+x mygrate.py
           ./mygrate.py check
