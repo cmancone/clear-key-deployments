@@ -21,3 +21,21 @@ jobs:
           pip install -r requirements.txt
       - name: Test
         run: cd python && ./test.py
+  test_mygrations:
+    runs-on: ubuntu-latest
+    name: Test Mygrations
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.8"
+      - name: Install mygrations
+        run: python -m pip install --upgrade mygrations
+      - name: Check
+        run: |
+          echo 'files_directory = "sql/"' > mygrate.conf
+          wget 'https://raw.githubusercontent.com/cmancone/mygrations/master/mygrate.py'
+          chmod a+x mygrate.py
+          ./mygrate.py check
