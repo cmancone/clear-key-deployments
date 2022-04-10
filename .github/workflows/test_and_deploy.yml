@@ -54,7 +54,7 @@ jobs:
         run: |
           echo 'files_directory = "sql/"' > mygrate.conf
           echo 'env_file = ".env"' >> mygrate.conf
-          wget 'https://raw.githubusercontent.com/cmancone/mygrations/5e63700ca5ab179dd57f9e6fcd07fce526def7d3/mygrations/mygrate.py'
+          wget 'https://raw.githubusercontent.com/cmancone/mygrations/5e63700ca5ab179dd57f9e6fcd07fce526def7d3/mygrate.py'
           chmod a+x mygrate.py
           ./mygrate.py check
   terraform_plan:
