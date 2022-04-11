@@ -111,11 +111,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - id: install-aws-cli
-        uses: unfor19/install-aws-cli-action@v1.0.2
-        with:
-            version: 2
-            arch: amd64
       - name: Login to AWS
         id: fetch-secrets
         uses: cmancone/akeyless-action@v1
@@ -135,6 +130,8 @@ jobs:
           cat requirements.txt
           pip install -r requirements.txt
       - name: Migrate
+        env:
+          AWS_EC2_METADATA_DISABLED: true
         run: |
           echo '1'
           export sql=$(cat sql/*.sql | tr '\n' ' ' | sed 's/"/\\"/g')
