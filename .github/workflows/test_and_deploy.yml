@@ -136,10 +136,12 @@ jobs:
           echo '2'
           export payload="{\"command\": \"apply\", \"sql\": \"$sql\"}"
           echo '3'
-          aws sts get-caller-identity
-          echo '4'
+          which aws
+          aws --version
           echo $sql
           echo $payload
+          aws sts get-caller-identity
+          echo '4'
           echo "${{ inputs.migration-function-name }}"
           aws lambda invoke --function-name "${{ inputs.migration-function-name }}" --invocation-type RequestResponse --cli-binary-format raw-in-base64-out --payload "$payload" actions.json
           echo '5'
