@@ -25,10 +25,23 @@ on:
         type: string
         description: 'The python version to use'
         default: '3.8'
+      run-database-migrations:
+        type: boolean
+        description: 'Whether or not to run database migration checks/deployments'
+        default: true
+      run-python:
+        type: boolean
+        description: 'Whether or not to run python tests/package building'
+        default: true
+      run-terraform:
+        type: boolean
+        description: 'Whether or not to run terraform tests/deployments'
+        default: true
 jobs:
   test_python:
     runs-on: ubuntu-latest
     name: Python Tests
+    if: ${{ inputs.run-python == true }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -48,6 +61,7 @@ jobs:
   test_mygrations:
     runs-on: ubuntu-latest
     name: Check DB Schema
+    if: ${{ inputs.run-database-migrations == true }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -67,6 +81,7 @@ jobs:
   terraform_plan:
     runs-on: ubuntu-latest
     name: Terraform Plan
+    if: ${{ inputs.run-terraform == true }}
     permissions:
       id-token: write
       contents: read
@@ -105,7 +120,7 @@ jobs:
         id: terraform-plan
         run: cd ./terraform && terraform plan -no-color
   mygrate:
-    if: github.ref == ${{ github.event.repository.default_branch }}
+    if: github.ref == ${{ github.event.repository.default_branch }} && ${{ inputs.run-database-migrations == true }}
     runs-on: ubuntu-latest
     needs: [test_python, test_mygrations, terraform_plan]
     permissions:
@@ -143,7 +158,7 @@ jobs:
           echo "Response:"
           cat actions.json
   deploy:
-    if: github.ref == ${{ github.event.repository.default_branch }}
+    if: github.ref == ${{ github.event.repository.default_branch }} && ${{ inputs.run-terraform == true }}
     needs: [mygrate]
     runs-on: ubuntu-latest
     name: Deploy
