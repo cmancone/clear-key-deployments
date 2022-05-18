@@ -158,7 +158,7 @@ jobs:
           echo "Response:"
           cat actions.json
   deploy:
-    if: github.ref == ${{ github.event.repository.default_branch }} && ${{ inputs.run-terraform == true }}
+    if: github.ref == ${{ github.event.repository.default_branch }} && ${{ inputs.run-terraform == true }} && ${{ success() }}
     needs: [mygrate]
     runs-on: ubuntu-latest
     name: Deploy
